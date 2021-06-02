@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<%- include("../partials/bootstrap.ejs"); %>
+	</head>
+	<body>
+		<%- include("../partials/header.ejs"); %>
+		<h1>Welome to EZStockTrader</h1>
+		<h2>Day <span id="day"><%= day %></span></h2>
+		<% if(session.isAdmin){ %>
+			<button type="button" onclick="nextDay()">Next Day</button>
+		<% } %>
+	</body>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/js/index.js"></script>
+</html>

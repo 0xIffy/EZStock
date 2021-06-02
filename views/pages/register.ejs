@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<%- include("../partials/bootstrap.ejs"); %>
+	</head>
+	<body>
+		<%- include("../partials/header.ejs"); %>
+		<br>
+		<label for="username">Username: </label>
+		<input type="text" id="username">
+		<br>
+		<label for="password">Password: </label>
+		<input type="password" id="password">
+		<br>
+		<label for="passwordConf">Confirm Password: </label>
+		<input type="password" id="passwordConf">
+		<br>
+		<button type="button" onclick="register()">Login</button>
+	</body>
+	<script src="/js/register.js"></script>
+</html>

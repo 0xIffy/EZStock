@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<%- include("../partials/bootstrap.ejs"); %>
+	</head>
+	<body>
+		<%- include("../partials/header.ejs"); %>
+		<br/>
+
+		<h1><%= list.name %></h1>
+
+		<% stocks.forEach(stock => { %>
+			<div id="<%= stock.symbol %>" class="card" onload="joinNSP('<%=stock.symbol%>')">
+				<div class="card-header">
+					<h5 class="mb-0">
+						<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#<%= stock.symbol %>DD" aria-expanded="true">
+							<%= stock.symbol %>
+						</button>
+					</h5>
+				</div>
+		
+				<div id="<%= stock.symbol %>DD" class="collapse" >
+					<div class="card-body">
+						<h4>Current: $<span id="<%= stock.symbol %>Price"><%= stock.currentPrice.toFixed(2) %></span></h4>
+						<h4><span id="<%= stock.symbol %>Shares"><%= stock.sharesTraded[session.day-1] %></span> shares traded today</h4>
+						<div>
+							<h5>Bids:</h5>
+							<% if(stock.currentBids.length > 0){ %>
+								<ul id="<%= stock.symbol %>Bids">
+								<% stock.currentBids.forEach(bid => { %>
+									<li><%= bid.amount %> shares for $<%= bid.price.toFixed(2) %>/share</li>
+								<% }); %>
+								</ul>
+							<% } else{ %>
+								<p>There are no bids for this stock at the moment.</p>
+							<% } %>
+						</div>
+						<div>
+							<h5>Asks:</h5>
+							<% if(stock.currentAsks.length > 0){ %>
+								<ul id="<%= stock.symbol %>Asks">
+								<% stock.currentAsks.forEach(ask => { %>
+									<li><%= ask.amount %> shares for $<%= ask.price.toFixed(2) %>/share</li>
+								<% }); %>
+								</ul>
+							<% } else{ %>
+								<p>There are no asks for this stock at the moment.</p>
+							<% } %>
+						</div>
+						<a href="/stocks/<%= stock.symbol %>">Visit Page</a>
+						<button class="btn btn-link"  onclick="remStock('<%= stock.symbol %>')">Remove</button>
+					</div>
+				</div>
+			</div>
+		<% }); %>
+	</body>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/js/list.js"></script>
+</html>	

@@ -1,0 +1,25 @@
+{
+  "name": "stock_market",
+  "version": "1.0.0",
+  "description": "stock market simulation",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Braeden Hall",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "connect-mongodb-session": "^2.4.1",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-graphql": "^0.11.0",
+    "express-session": "^1.17.1",
+    "graphql": "^15.3.0",
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.5",
+    "nodemon": "^2.0.4",
+    "socketio": "^1.0.0"
+  }
+}

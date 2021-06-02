@@ -1,0 +1,17 @@
+nav a {
+	color: aliceblue;
+	
+}
+nav a:hover{
+	color: darkgray;
+}
+.navbar-nav {
+	flex-direction: row;
+}
+.navbar-brand:hover{
+	color: aliceblue;
+}
+.nav-link {
+	padding-right: .5rem !important;
+	padding-left: .5rem !important;
+}

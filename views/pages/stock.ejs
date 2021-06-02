@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<%- include("../partials/bootstrap.ejs"); %>
+	</head>
+	<body onload="joinNSP('<%=stock.symbol%>')">
+		<%- include("../partials/header.ejs"); %>
+		<% let userShares = null;
+			if(user){ 	
+				userShares = user.shares.filter(obj => {
+					return obj.stock === stock.symbol;
+				})[0];
+			}
+		%>
+		<br>
+		<div class="container-fluid">
+			<ul class="nav nav-tabs nav-fill" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" data-toggle="tab" href="#today">Current Day</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" href="#history">History</a>
+				</li>
+				<li class="nav-item">
+					<% if(user){ %>
+						<a class="nav-link" data-toggle="tab" href="#order">Order</a>
+					<% } else{ %>
+						<span data-toggle="tooltip" data-placement="top" title="Login to place orders.">
+							<a class="nav-link disabled" data-toggle="tab" href="#order">Order</a>
+						</span>
+					<% } %>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane fade show active" id="today">
+					<div>
+						<h2 id="symbol"><%= stock.symbol %></h2>
+						<h2>Current: $<span id="price"><%= stock.currentPrice.toFixed(2) %></span></h2>
+						<h3>High: $<span id="high"><%= stock.dailyHigh[session.day-1].toFixed(2) %></span></h3>
+						<h3>Low: $<span id="low"><%= stock.dailyLow[session.day-1].toFixed(2) %></span></h3>
+						<h3><span id="shares"><%= stock.sharesTraded[session.day-1] %></span> shares traded today</h3>
+					</div>
+					<div id="graph">
+						
+					</div>
+					<div>
+						<h3>Bids:</h3>
+						<% if(stock.currentBids.length > 0){ %>
+							<ul id="bids">
+							<% stock.currentBids.forEach(bid => { %>
+								<li><%= bid.amount %> shares for $<%= bid.price.toFixed(2) %>/share</li>
+							<% }); %>
+							</ul>
+						<% } else{ %>
+							<p>There are no bids for this stock at the moment.</p>
+						<% } %>
+					</div>
+					<div>
+						<h3>Asks:</h3>
+						<% if(stock.currentAsks.length > 0){ %>
+							<ul id="asks">
+							<% stock.currentAsks.forEach(ask => { %>
+								<li><%= ask.amount %> shares for $<%= ask.price.toFixed(2) %>/share</li>
+							<% }); %>
+							</ul>
+						<% } else{ %>
+							<p>There are no asks for this stock at the moment.</p>
+						<% } %>
+					</div>
+					<% if(user){ %>
+						<button type="button" data-toggle="modal" data-target="#watchlistModal">Add to Watchlist</button>
+						<div class="modal fade" id="watchlistModal" tabindex="-1" role="dialog" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLabel">Add to Watchlist</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div id="wmbody" class="modal-body">
+										<select id="watchlist" onchange="checkOption()">
+											<option disabled selected>-- Select Watchlist --</option>
+											<% user.watchlists.forEach(list => { %>
+												<option><%= list.name %></option>
+											<% }); %>
+											<option>Create new watchlist</option>
+										</select>
+										<br>
+									</div>
+									<div class="modal-footing">
+										<div class="row justify-content-center">
+											<button type="button" onclick="watchStock()">Confirm</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<button type="button" data-toggle="modal" data-target="#subscriptionModal">Subcribe</button>
+						<div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLabel">Create Subscription</h5>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<!-- <select id="subsription">
+											<option disabled selected>-- Select Trigger --</option>
+											<option>Minimum Daily Change</option>
+										</select>
+										<br> -->
+										<label for="triggerChange">Minimum Change (%):</label>
+										<input type="text" id="triggerChange">
+									</div>
+									<div class="modal-footing">
+										<div class="row justify-content-center">
+											<button type="button" onclick="subscribe()">Confirm</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					<% } %>
+				</div>
+				<div class="tab-pane fade" id="history">
+					<h5>Please enter date range: </h5>
+					<input type="text" id="startday" placeholder="Start Day"> to 
+					<input type="text" id="endday" placeholder="End Day">
+					<button type="button" onclick="getStockHistory()">Submit</button>
+					<br><br>
+					<div id="days">	
+						<p>Historical data will be displayed here</p>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="order">
+					<div>
+						<% 
+							if(userShares){
+								let amt = 0;
+								let priceTotal = userShares.avgPrice.reduce((total, obj) => {
+									amt += obj.amt;
+									return total += obj.amt * obj.prc;
+								},0);
+
+								let avgPrice = priceTotal/amt;
+					 %>
+							<h3>You have <%= userShares.amount %> of <%= userShares.stock %> shares </h3>
+							<h4>On average you have paid $<%= avgPrice.toFixed(2) %> for these shares</h4>
+						<% } else{ %>
+							<h3>You do not currently have any <%= stock.symbol %> shares in your portfolio</h3>
+						<% } %>
+						<h4>The current market value is $<%= stock.currentPrice.toFixed(2) %></h4>
+					</div>
+					<br>
+					<div>
+						<h3>Order Information:</h3>
+						<label for="orderType">Type: </label>
+						<select id="orderType">
+							<option value="Buy">Buy</option>
+							<option value="Sell">Sell</option>
+						</select>
+						<label for="orderAmount">Amount</label>
+						<input id="orderAmount" type="text">
+						<label for="orderPrice">Price per share:</label>
+						<input id="orderPrice" type="text">
+						<label for="orderExpires">Expires:</label>
+						<input type="checkbox" id="orderExpires">
+						<button type="button" onclick="submitOrder()">Place Order</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/js/stock.js"></script>
+</html>

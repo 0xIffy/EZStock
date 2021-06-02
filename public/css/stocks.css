@@ -1,0 +1,10 @@
+.stockLink{
+	padding-left: 3em;
+}
+.stockLink:hover{
+	background-color: rgb(228, 228, 228);
+}
+.stockLink p{
+	margin: 0%;
+	padding-left: 1em;
+}

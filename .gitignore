@@ -1,0 +1,6 @@
+*.cert
+*.key
+node_modules/
+*.zip
+ezstock/
+specs/

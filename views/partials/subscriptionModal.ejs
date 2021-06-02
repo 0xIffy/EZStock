@@ -1,0 +1,27 @@
+<!-- Modal -->
+<div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="stockSymbol"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+				<label for="trigger">Trigger %</label>
+				<input type="text" id="trigger" value=""><br><br>
+				<b><p>Active:</p></b>
+				<input type="radio" name="active" id="yes" value="yes">
+				<label for="yes">Yes</label><br>
+				<input type="radio" name="active" id="no" value="no">
+				<label for="no">No</label><br>
+      </div>
+      <div class="modal-footing">
+				<div class="row justify-content-center">
+	        <button type="button" class="btn btn-primary" onclick="changeSub()">Save</button>
+				</div>
+			</div>
+    </div>
+  </div>
+</div>

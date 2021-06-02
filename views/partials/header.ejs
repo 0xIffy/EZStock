@@ -1,0 +1,42 @@
+<nav class="navbar navbar-primary bg-primary">
+	<a class="navbar-brand" href="/">EZStock</a>
+	<ul class="navbar-nav mr-auto">
+		<li class="nav-item">
+			<a class="nav-link" href="/stocks">Stocks</a>
+		</li>
+		<% if(!session.loggedin){ %>
+			<li class="nav-item">
+				<a class="nav-link" href="/login">Login</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/register">Register</a>
+			</li>
+		<% } else{ %>
+			<li class="nav-item">
+				<a class="nav-link" href="/users/<%-session.userId%>">Profile</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/logout">Logout</a>
+			</li>
+		<% } %>
+	</ul>
+	<% if(session.loggedin){ %>
+		<div class="dropleft">
+			<button class="dropdown-toggle btn" data-toggle="dropdown">
+				<img src="/img/bell.png" height="30px">
+			</button>
+			<div class="dropdown-menu" id="notifs">
+				<% if(session.notifs.length > 0){ %>
+					<% session.notifs.forEach(notif => { %>
+						<a id="<%=notif._id%>" class="dropdown-item" onclick="readNotif('<%=notif._id%>')"><%= notif.message %></a>
+					<% }); %>
+				<% } else{ %>
+					<p class="dropdown-itme">You have no new notifications.</p>
+				<% } %>
+			</div>
+		</div>
+	<% } %>
+</nav>
+
+<script src="/js/notifs.js"></script>
+<link rel="stylesheet" href="/css/navbar.css">

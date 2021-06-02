@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<%- include("../partials/bootstrap.ejs"); %>
+		<link rel="stylesheet" href="/css/stocks.css">
+	</head>
+	<body>
+		<%- include("../partials/header.ejs"); %>
+		<br>
+		<div>
+			<h4>Filters: </h4>
+			&nbsp&nbsp&nbsp&nbsp
+			<label for="symbol">Enter Stock Symbol: </label>
+			<input type="text" id="symbol" value="<%=query.symbol%>">
+			<label for="min">Min Price: </label>
+			<input id="min" type="text" value="<%=query.minprice%>">
+			<label for="max">Max Price: </label>
+			<input id="max" type="text" value="<%=query.maxprice%>">
+			<button type="button" onclick="searchStocks()">Search</button>
+		</div>
+		<br>
+		<div>
+			<% if(stocks.length > 0){ %>
+				<h5>Results:</h5>
+				<% stocks.forEach(stock => { %>
+					<div class="stockLink">
+						<a href="/stocks/<%= stock.symbol %>"><%= stock.symbol %></a>
+						<p>Price: $<%= stock.currentPrice.toFixed(2) %> &nbsp &nbsp Shares Traded Today: <%= stock.sharesTraded[session.day - 1] %></p>
+					</div>
+				<% }); %>
+			<% } else{ %>
+				<h3>No Results Found</h3>
+			<% } %>
+		</div>
+	</body>
+	<script src="/js/stocks.js"></script>
+</html>
